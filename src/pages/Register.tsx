@@ -21,6 +21,10 @@ const registerSchema = z.object({
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
+const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-gray-900 text-white placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
+const iconClass = "h-5 w-5 text-primary-600";
+const labelClass = "block text-sm font-medium text-primary-700 mb-1";
+
 export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
@@ -53,15 +57,15 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary-800 to-primary-600 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex items-center justify-center bg-white py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-white mb-2">通用工时管理系统</h1>
-          <p className="text-primary-100">创建新账号</p>
+          <h1 className="text-4xl font-bold text-primary-700 mb-2">通用工时管理系统</h1>
+          <p className="text-primary-600">创建新账号</p>
         </div>
         
-        <div className="bg-white rounded-lg shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-center text-gray-900 mb-6">注册</h2>
+        <div className="bg-white rounded-lg shadow-xl border-2 border-primary-600 p-8">
+          <h2 className="text-2xl font-bold text-center text-primary-700 mb-6">注册</h2>
           
           {error && (
             <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
@@ -71,78 +75,78 @@ export default function Register() {
           
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">手机号</label>
+              <label className={labelClass}>手机号</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Phone className="h-5 w-5 text-gray-400" />
+                  <Phone className={iconClass} />
                 </div>
                 <input
                   {...registerField('phone')}
                   type="tel"
                   placeholder="请输入手机号"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.phone && <p className="mt-1 text-sm text-red-600">{errors.phone.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">身份证号</label>
+              <label className={labelClass}>身份证号</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <CreditCard className="h-5 w-5 text-gray-400" />
+                  <CreditCard className={iconClass} />
                 </div>
                 <input
                   {...registerField('idCard')}
                   type="text"
                   placeholder="请输入身份证号"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.idCard && <p className="mt-1 text-sm text-red-600">{errors.idCard.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">真实姓名</label>
+              <label className={labelClass}>真实姓名</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <User className="h-5 w-5 text-gray-400" />
+                  <User className={iconClass} />
                 </div>
                 <input
                   {...registerField('realName')}
                   type="text"
                   placeholder="请输入真实姓名"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.realName && <p className="mt-1 text-sm text-red-600">{errors.realName.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">公司名称</label>
+              <label className={labelClass}>公司名称</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Building className="h-5 w-5 text-gray-400" />
+                  <Building className={iconClass} />
                 </div>
                 <input
                   {...registerField('companyName')}
                   type="text"
                   placeholder="请输入公司名称"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">角色</label>
+              <label className={labelClass}>角色</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Shield className="h-5 w-5 text-gray-400" />
+                  <Shield className={iconClass} />
                 </div>
                 <select
                   {...registerField('role')}
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 >
                   <option value="">请选择角色</option>
                   <option value="user">普通用户</option>
@@ -154,32 +158,32 @@ export default function Register() {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">密码</label>
+              <label className={labelClass}>密码</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className={iconClass} />
                 </div>
                 <input
                   {...registerField('password')}
                   type="password"
                   placeholder="请输入密码（至少6位）"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password.message}</p>}
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">确认密码</label>
+              <label className={labelClass}>确认密码</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className={iconClass} />
                 </div>
                 <input
                   {...registerField('confirmPassword')}
                   type="password"
                   placeholder="请再次输入密码"
-                  className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                  className={inputClass}
                 />
               </div>
               {errors.confirmPassword && <p className="mt-1 text-sm text-red-600">{errors.confirmPassword.message}</p>}
@@ -195,7 +199,7 @@ export default function Register() {
           </form>
 
           <div className="mt-6 text-center text-sm">
-            <span className="text-gray-600">已有账号？</span>
+            <span className="text-primary-600">已有账号？</span>
             <Link to="/" className="ml-1 text-primary-600 hover:text-primary-700">
               立即登录
             </Link>
