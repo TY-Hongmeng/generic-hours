@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Phone, CreditCard, User, Building, Shield, Lock, Loader2 } from 'lucide-react';
+import { Phone, CreditCard, User, Building, Shield, Lock, Loader2, ChevronDown } from 'lucide-react';
 import { register } from '../services/auth';
 import { supabase } from '../services/supabase';
 import { ROLE_LABELS, type RoleType } from '../types';
@@ -25,6 +25,7 @@ const registerSchema = z.object({
 type RegisterForm = z.infer<typeof registerSchema>;
 
 const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
+const selectClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent appearance-none";
 const iconClass = "h-5 w-5 text-primary-600";
 const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 
@@ -190,13 +191,16 @@ export default function Register() {
                   {...registerField('companyName', {
                     onChange: (e) => setSelectedCompany(e.target.value),
                   })}
-                  className={inputClass}
+                  className={selectClass}
                 >
-                  <option value="">请选择公司</option>
+                  <option value="" disabled hidden className="text-gray-400">请选择公司</option>
                   {companies.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c} className="text-gray-900">{c}</option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                </div>
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
             </div>
@@ -210,13 +214,16 @@ export default function Register() {
                   </div>
                   <select
                     {...registerField('subCompanyName')}
-                    className={inputClass}
+                    className={selectClass}
                   >
-                    <option value="">请选择分公司（可选）</option>
+                    <option value="" disabled hidden className="text-gray-400">请选择分公司（可选）</option>
                     {subCompanies.map((s) => (
-                      <option key={s} value={s}>{s}</option>
+                      <option key={s} value={s} className="text-gray-900">{s}</option>
                     ))}
                   </select>
+                  <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                    <ChevronDown className="h-5 w-5 text-primary-600" />
+                  </div>
                 </div>
               </div>
             )}
@@ -229,13 +236,16 @@ export default function Register() {
                 </div>
                 <select
                   {...registerField('role')}
-                  className={inputClass}
+                  className={selectClass}
                 >
-                  <option value="">请选择角色</option>
+                  <option value="" disabled hidden className="text-gray-400">请选择角色</option>
                   {ROLES.map((r) => (
-                    <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                    <option key={r} value={r} className="text-gray-900">{ROLE_LABELS[r]}</option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                </div>
               </div>
               {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
             </div>
