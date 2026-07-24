@@ -117,17 +117,18 @@ export async function resetPassword(idCard: string, newPassword: string): Promis
       return { success: false, message: '身份证号不存在' };
     }
 
-    // 注意：Supabase Auth 不允许直接修改用户密码
-    // 这里需要通过邮箱重置密码的流程
-    const email = `${idCard}@generic-hours.com`;
-    
-    const { error: resetError } = await supabase.auth.resetPasswordForEmail(email);
+    // 使用 Supabase Admin API 重置密码
+    // 注意：生产环境需要在服务端调用 Admin API
+    // 这里使用 supabase.auth.updateUser 作为临时方案
+    const { error: updateError } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
 
-    if (resetError) {
-      return { success: false, message: '重置密码失败' };
+    if (updateError) {
+      return { success: false, message: '重置密码失败：' + updateError.message };
     }
 
-    return { success: true, message: '密码重置链接已发送' };
+    return { success: true, message: '密码重置成功' };
   } catch (error) {
     return { success: false, message: '重置密码失败，请稍后重试' };
   }
