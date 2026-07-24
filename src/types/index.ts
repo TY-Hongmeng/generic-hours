@@ -5,7 +5,8 @@ export interface User {
   id_card: string;
   real_name: string;
   company_id: string;
-  role: 'user' | 'admin' | 'super_admin';
+  sub_company_id: string | null;
+  role: RoleType;
   created_at: string;
   updated_at: string;
 }
@@ -22,10 +23,39 @@ export interface Company {
   updated_at: string;
 }
 
+// 分公司数据模型
+export interface SubCompany {
+  id: string;
+  company_id: string;
+  name: string;
+  created_at: string;
+}
+
+// 角色类型
+export type RoleType =
+  | 'employee'        // 员工
+  | 'team_leader'     // 班长
+  | 'section_leader'  // 段长
+  | 'accountant'      // 财会
+  | 'production_manager' // 生产经理
+  | 'finance_director'   // 财务总监
+  | 'system_admin';   // 系统管理员
+
+// 角色元数据
+export const ROLE_LABELS: Record<RoleType, string> = {
+  employee: '员工',
+  team_leader: '班长',
+  section_leader: '段长',
+  accountant: '财会',
+  production_manager: '生产经理',
+  finance_director: '财务总监',
+  system_admin: '系统管理员',
+};
+
 // 角色数据模型
 export interface Role {
   id: string;
-  name: string;
+  name: RoleType;
   description: string;
   permissions: string[];
   created_at: string;
@@ -37,7 +67,8 @@ export interface RegisterRequest {
   idCard: string;
   realName: string;
   companyName: string;
-  role: string;
+  subCompanyName?: string;
+  role: RoleType;
   password: string;
 }
 

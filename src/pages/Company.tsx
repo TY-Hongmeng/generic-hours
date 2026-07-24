@@ -50,7 +50,7 @@ export default function CompanyPage() {
     }
   };
 
-  const canEdit = user?.role === 'admin' || user?.role === 'super_admin';
+  const canEdit = user?.role === 'system_admin' || user?.role === 'finance_director' || user?.role === 'production_manager';
 
   if (loading) {
     return <div className="text-center py-8">加载中...</div>;

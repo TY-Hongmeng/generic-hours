@@ -6,7 +6,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
   try {
     // 使用手机号作为邮箱格式
     const email = `${data.phone}@generic-hours.com`;
-    
+
     // 创建 Supabase Auth 用户
     const { data: authData, error: authError } = await supabase.auth.signUp({
       email,
@@ -21,29 +21,32 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
       return { success: false, message: '注册失败' };
     }
 
-    // 查询或创建公司
+    // 查询公司
     const { data: company, error: companyError } = await supabase
       .from('companies')
       .select('id')
       .eq('name', data.companyName)
       .single();
 
-    let companyId: string;
-    
     if (companyError || !company) {
-      // 创建新公司
-      const { data: newCompany, error: newCompanyError } = await supabase
-        .from('companies')
-        .insert({ name: data.companyName })
+      return { success: false, message: '公司不存在，请联系管理员添加' };
+    }
+
+    let subCompanyId: string | null = null;
+
+    // 如果有分公司，查询分公司
+    if (data.subCompanyName) {
+      const { data: subCompany, error: subCompanyError } = await supabase
+        .from('sub_companies')
         .select('id')
+        .eq('company_id', company.id)
+        .eq('name', data.subCompanyName)
         .single();
 
-      if (newCompanyError || !newCompany) {
-        return { success: false, message: '创建公司信息失败' };
+      if (subCompanyError || !subCompany) {
+        return { success: false, message: '分公司不存在' };
       }
-      companyId = newCompany.id;
-    } else {
-      companyId = company.id;
+      subCompanyId = subCompany.id;
     }
 
     // 创建用户记录
@@ -54,15 +57,16 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
         phone: data.phone,
         id_card: data.idCard,
         real_name: data.realName,
-        company_id: companyId,
+        company_id: company.id,
+        sub_company_id: subCompanyId,
         role: data.role,
       });
 
     if (userError) {
-      return { success: false, message: '创建用户记录失败' };
+      return { success: false, message: '创建用户记录失败：' + userError.message };
     }
 
-    return { success: true, message: '注册成功' };
+    return { success: true, message: '注册成功，请登录' };
   } catch (error) {
     return { success: false, message: '注册失败，请稍后重试' };
   }
@@ -72,7 +76,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 export async function login(phone: string, password: string): Promise<AuthResponse> {
   try {
     const email = `${phone}@generic-hours.com`;
-    
+
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
@@ -104,12 +108,12 @@ export async function login(phone: string, password: string): Promise<AuthRespon
 }
 
 // 通过身份证号重置密码
-export async function resetPassword(idCard: string, newPassword: string): Promise<AuthResponse> {
+export async function resetPassword(idCard: string, _newPassword: string): Promise<AuthResponse> {
   try {
     // 查找用户
     const { data: user, error: userError } = await supabase
       .from('users')
-      .select('id')
+      .select('id, phone')
       .eq('id_card', idCard)
       .single();
 
@@ -117,18 +121,11 @@ export async function resetPassword(idCard: string, newPassword: string): Promis
       return { success: false, message: '身份证号不存在' };
     }
 
-    // 使用 Supabase Admin API 重置密码
-    // 注意：生产环境需要在服务端调用 Admin API
-    // 这里使用 supabase.auth.updateUser 作为临时方案
-    const { error: updateError } = await supabase.auth.updateUser({
-      password: newPassword,
-    });
-
-    if (updateError) {
-      return { success: false, message: '重置密码失败：' + updateError.message };
-    }
-
-    return { success: true, message: '密码重置成功' };
+    // 重置密码需要 admin 权限，这里返回提示
+    return {
+      success: false,
+      message: '密码重置功能需要联系系统管理员处理（安全原因暂不支持自助重置）',
+    };
   } catch (error) {
     return { success: false, message: '重置密码失败，请稍后重试' };
   }
@@ -137,7 +134,7 @@ export async function resetPassword(idCard: string, newPassword: string): Promis
 // 获取当前用户
 export async function getCurrentUser(): Promise<User | null> {
   const { data: { user } } = await supabase.auth.getUser();
-  
+
   if (!user) {
     return null;
   }
