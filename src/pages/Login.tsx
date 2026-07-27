@@ -112,7 +112,7 @@ export default function Login() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.8</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.9</p>
       </div>
     </div>
   );

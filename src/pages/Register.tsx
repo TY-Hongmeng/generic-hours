@@ -215,7 +215,7 @@ export default function Register() {
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                  <ChevronDown className="h-6 w-6 text-primary-600 stroke-2" />
                 </div>
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
@@ -240,7 +240,7 @@ export default function Register() {
                   ))}
                 </select>
                 <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                  <ChevronDown className="h-6 w-6 text-primary-600 stroke-2" />
                 </div>
                 </div>
               </div>
