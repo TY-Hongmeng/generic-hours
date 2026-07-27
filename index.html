@@ -9,7 +9,7 @@
     <meta http-equiv="Expires" content="0" />
     <title>通用工时管理系统</title>
     <style>
-      /* 完全隐藏浏览器原生下拉箭头 */
+      /* 隐藏浏览器原生下拉箭头，使用自定义蓝色倒三角 */
       select {
         -webkit-appearance: none !important;
         -moz-appearance: none !important;
@@ -17,15 +17,6 @@
         background-image: none !important;
       }
       select::-ms-expand { display: none; }
-      select::-webkit-calendar-picker-indicator { display: none !important; }
-      /* 下拉项选中/悬停高亮改为蓝色 - 使用更多选择器 */
-      select option { background-color: #ffffff; color: #111827; }
-      select option:checked { background-color: #2563eb !important; color: #ffffff !important; }
-      select option:focus { background-color: #2563eb !important; color: #ffffff !important; }
-      select option:active { background-color: #2563eb !important; color: #ffffff !important; }
-      select option:hover { background-color: #2563eb !important; color: #ffffff !important; }
-      /* Firefox 专属 */
-      select option:checked, select:-moz-focusring { background-color: #2563eb !important; color: #ffffff !important; }
     </style>
   </head>
   <body>

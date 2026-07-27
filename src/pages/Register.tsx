@@ -256,13 +256,16 @@ export default function Register() {
                   {...registerField('role', {
                     onChange: (e) => setSelectedRole(e.target.value),
                   })}
-                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-gray-900' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                  className={`block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
                 >
                   <option value="">请选择角色</option>
                   {ROLES.map((r) => (
-                    <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                    <option key={r} value={r} className="text-gray-900">{ROLE_LABELS[r]}</option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-6 w-6 text-primary-600 stroke-2" />
+                </div>
               </div>
               {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
             </div>
@@ -315,7 +318,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.8</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.10</p>
       </div>
     </div>
   );
