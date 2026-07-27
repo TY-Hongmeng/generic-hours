@@ -8,6 +8,19 @@
     <meta http-equiv="Pragma" content="no-cache" />
     <meta http-equiv="Expires" content="0" />
     <title>通用工时管理系统</title>
+    <style>
+      /* 完全隐藏浏览器原生下拉箭头 */
+      select {
+        -webkit-appearance: none !important;
+        -moz-appearance: none !important;
+        appearance: none !important;
+        background-image: none !important;
+      }
+      select::-ms-expand { display: none; }
+      /* 下拉项选中/悬停高亮改为蓝色 */
+      select option:checked { background-color: #2563eb !important; color: #ffffff !important; }
+      select option:hover { background-color: #2563eb !important; color: #ffffff !important; }
+    </style>
   </head>
   <body>
     <div id="root"></div>
