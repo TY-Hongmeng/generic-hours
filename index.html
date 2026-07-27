@@ -17,12 +17,18 @@
         background-image: none !important;
       }
       select::-ms-expand { display: none; }
-      /* 下拉项选中/悬停高亮改为蓝色 */
+      select::-webkit-calendar-picker-indicator { display: none !important; }
+      /* 下拉项选中/悬停高亮改为蓝色 - 使用更多选择器 */
+      select option { background-color: #ffffff; color: #111827; }
       select option:checked { background-color: #2563eb !important; color: #ffffff !important; }
+      select option:focus { background-color: #2563eb !important; color: #ffffff !important; }
+      select option:active { background-color: #2563eb !important; color: #ffffff !important; }
       select option:hover { background-color: #2563eb !important; color: #ffffff !important; }
+      /* Firefox 专属 */
+      select option:checked, select:-moz-focusring { background-color: #2563eb !important; color: #ffffff !important; }
     </style>
-    <script type="module" crossorigin src="/generic-hours/assets/index-BNgd31pK.js"></script>
-    <link rel="stylesheet" crossorigin href="/generic-hours/assets/index-4fNDQiFK.css">
+    <script type="module" crossorigin src="/generic-hours/assets/index-BDVgaDRY.js"></script>
+    <link rel="stylesheet" crossorigin href="/generic-hours/assets/index-iQ9Kk52S.css">
   </head>
   <body>
     <div id="root"></div>
