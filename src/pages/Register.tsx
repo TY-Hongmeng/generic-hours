@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import { Phone, CreditCard, User, Building, Shield, Lock, Loader2 } from 'lucide-react';
+import { Phone, CreditCard, User, Building, Shield, Lock, Loader2, ChevronDown } from 'lucide-react';
 import { register } from '../services/auth';
 import { supabase } from '../services/supabase';
 import { ROLE_LABELS, type RoleType } from '../types';
@@ -207,13 +207,16 @@ export default function Register() {
                   {...registerField('companyName', {
                     onChange: (e) => setSelectedCompany(e.target.value),
                   })}
-                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedCompany ? 'text-gray-900' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                  className={`appearance-none block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedCompany ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
                 >
                   <option value="">请选择公司</option>
                   {companies.map((c) => (
-                    <option key={c} value={c}>{c}</option>
+                    <option key={c} value={c} className="text-gray-900">{c}</option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                </div>
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
             </div>
@@ -229,13 +232,16 @@ export default function Register() {
                   {...registerField('subCompanyName', {
                     onChange: (e) => setSelectedSubCompany(e.target.value),
                   })}
-                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedSubCompany ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                  className={`appearance-none block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedSubCompany ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
                 >
                   <option value="">请选择分公司（可选）</option>
                   {subCompanies.map((s) => (
-                    <option key={s} value={s}>{s}</option>
+                    <option key={s} value={s} className="text-gray-900">{s}</option>
                   ))}
                 </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-5 w-5 text-primary-600" />
+                </div>
                 </div>
               </div>
             )}
@@ -309,7 +315,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.6</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.7</p>
       </div>
     </div>
   );
