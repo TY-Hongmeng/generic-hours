@@ -106,7 +106,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
 // 用户登录
 export async function login(phone: string, password: string): Promise<AuthResponse> {
   try {
-    const email = `${phone}@generic-hours.com`;
+    const email = `${phone}@example.com`;
 
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
