@@ -133,7 +133,7 @@ export default function ForgotPassword() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.12</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.13</p>
       </div>
     </div>
   );
