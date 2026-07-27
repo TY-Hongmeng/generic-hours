@@ -207,7 +207,7 @@ export default function Register() {
                   {...registerField('companyName', {
                     onChange: (e) => setSelectedCompany(e.target.value),
                   })}
-                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedCompany ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedCompany ? 'text-gray-900' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                 >
                   <option value="">请选择公司</option>
                   {companies.map((c) => (
@@ -250,7 +250,7 @@ export default function Register() {
                   {...registerField('role', {
                     onChange: (e) => setSelectedRole(e.target.value),
                   })}
-                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
+                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-gray-900' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                 >
                   <option value="">请选择角色</option>
                   {ROLES.map((r) => (
@@ -309,7 +309,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.5</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.6</p>
       </div>
     </div>
   );
