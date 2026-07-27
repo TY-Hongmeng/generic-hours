@@ -21,6 +21,38 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
       return { success: false, message: '注册失败' };
     }
 
+    let companyId: string | null = null;
+    let subCompanyId: string | null = null;
+
+    // 系统管理员不需要所属公司
+    if (data.role === 'system_admin') {
+      if (!data.companyName) {
+        // 系统管理员无公司，直接创建用户记录
+        const { error: userError } = await supabase
+          .from('users')
+          .insert({
+            id: authData.user.id,
+            phone: data.phone,
+            id_card: data.idCard,
+            real_name: data.realName,
+            company_id: null,
+            sub_company_id: null,
+            role: data.role,
+          });
+
+        if (userError) {
+          return { success: false, message: '创建用户记录失败：' + userError.message };
+        }
+
+        return { success: true, message: '注册成功，请登录' };
+      }
+    }
+
+    // 非系统管理员，必须有公司
+    if (!data.companyName) {
+      return { success: false, message: '请选择公司' };
+    }
+
     // 查询公司
     const { data: company, error: companyError } = await supabase
       .from('companies')
@@ -31,8 +63,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
     if (companyError || !company) {
       return { success: false, message: '公司不存在，请联系管理员添加' };
     }
-
-    let subCompanyId: string | null = null;
+    companyId = company.id;
 
     // 如果有分公司，查询分公司
     if (data.subCompanyName) {
@@ -57,7 +88,7 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
         phone: data.phone,
         id_card: data.idCard,
         real_name: data.realName,
-        company_id: company.id,
+        company_id: companyId,
         sub_company_id: subCompanyId,
         role: data.role,
       });

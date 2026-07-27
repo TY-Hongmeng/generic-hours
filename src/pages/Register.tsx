@@ -12,7 +12,7 @@ const registerSchema = z.object({
   phone: z.string().regex(/^1[3-9]\d{9}$/, '请输入正确的手机号'),
   idCard: z.string().regex(/^\d{17}[\dXx]$/, '请输入正确的身份证号'),
   realName: z.string().min(2, '请输入真实姓名'),
-  companyName: z.string().min(1, '请选择公司'),
+  companyName: z.string().optional(),
   subCompanyName: z.string().optional(),
   role: z.enum(['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director', 'system_admin'], { required_error: '请选择角色' }),
   password: z.string().min(6, '密码至少6位'),
@@ -20,6 +20,15 @@ const registerSchema = z.object({
 }).refine((data) => data.password === data.confirmPassword, {
   message: '两次密码输入不一致',
   path: ['confirmPassword'],
+}).refine((data) => {
+  // 非系统管理员必须选择公司
+  if (data.role !== 'system_admin' && (!data.companyName || data.companyName.length === 0)) {
+    return false;
+  }
+  return true;
+}, {
+  message: '请选择公司',
+  path: ['companyName'],
 });
 
 type RegisterForm = z.infer<typeof registerSchema>;
@@ -108,7 +117,7 @@ export default function Register() {
     setLoading(true);
 
     // 如果选了没有分公司的公司，清空 subCompanyName
-    const subCompanyName = COMPANIES_WITH_SUB.includes(data.companyName) && data.subCompanyName
+    const subCompanyName = data.companyName && COMPANIES_WITH_SUB.includes(data.companyName) && data.subCompanyName
       ? data.subCompanyName
       : undefined;
 
@@ -116,7 +125,7 @@ export default function Register() {
       phone: data.phone,
       idCard: data.idCard,
       realName: data.realName,
-      companyName: data.companyName,
+      companyName: data.companyName ?? '',
       subCompanyName,
       role: data.role,
       password: data.password,
@@ -198,6 +207,31 @@ export default function Register() {
             </div>
 
             <div>
+              <label className={labelClass}>角色</label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Shield className={iconClass} />
+                </div>
+                <select
+                  {...registerField('role', {
+                    onChange: (e) => setSelectedRole(e.target.value),
+                  })}
+                  className={`block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
+                >
+                  <option value="">请选择角色</option>
+                  {ROLES.map((r) => (
+                    <option key={r} value={r} className="text-gray-900">{ROLE_LABELS[r]}</option>
+                  ))}
+                </select>
+                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                  <ChevronDown className="h-6 w-6 text-primary-600 stroke-2" />
+                </div>
+              </div>
+              {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
+            </div>
+
+            {selectedRole !== 'system_admin' && (
+            <div>
               <label className={labelClass}>公司</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -220,6 +254,7 @@ export default function Register() {
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
             </div>
+            )}
 
             {COMPANIES_WITH_SUB.includes(selectedCompany) && (
               <div>
@@ -245,30 +280,6 @@ export default function Register() {
                 </div>
               </div>
             )}
-
-            <div>
-              <label className={labelClass}>角色</label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Shield className={iconClass} />
-                </div>
-                <select
-                  {...registerField('role', {
-                    onChange: (e) => setSelectedRole(e.target.value),
-                  })}
-                  className={`block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
-                >
-                  <option value="">请选择角色</option>
-                  {ROLES.map((r) => (
-                    <option key={r} value={r} className="text-gray-900">{ROLE_LABELS[r]}</option>
-                  ))}
-                </select>
-                <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                  <ChevronDown className="h-6 w-6 text-primary-600 stroke-2" />
-                </div>
-              </div>
-              {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
-            </div>
 
             <div>
               <label className={labelClass}>密码</label>
@@ -318,7 +329,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.10</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.11</p>
       </div>
     </div>
   );
