@@ -31,11 +31,17 @@ const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 const COMPANIES_WITH_SUB = ['吉通喜福地'];
 const ROLES: RoleType[] = ['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director', 'system_admin'];
 
+// 硬编码公司列表（同时从Supabase获取以保证数据一致）
+const HARDCODED_COMPANIES = ['吉通凯撒', '吉通喜福地'];
+const HARDCODED_SUBCOMPANIES: Record<string, string[]> = {
+  '吉通喜福地': ['挤压铝棒分公司', 'CPC铸造分公司', '重力铸造分公司'],
+};
+
 export default function Register() {
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [companies, setCompanies] = useState<string[]>([]);
+  const [companies, setCompanies] = useState<string[]>(HARDCODED_COMPANIES);
   const [subCompanies, setSubCompanies] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState('');
 
@@ -43,15 +49,19 @@ export default function Register() {
     resolver: zodResolver(registerSchema),
   });
 
-  // 加载公司列表
+  // 从Supabase加载公司列表（失败则使用硬编码）
   useEffect(() => {
     const loadCompanies = async () => {
-      const { data, error } = await supabase
-        .from('companies')
-        .select('name')
-        .order('name');
-      if (!error && data) {
-        setCompanies(data.map(c => c.name));
+      try {
+        const { data, error } = await supabase
+          .from('companies')
+          .select('name')
+          .order('name');
+        if (!error && data && data.length > 0) {
+          setCompanies(data.map(c => c.name));
+        }
+      } catch (e) {
+        // 静默失败，使用硬编码数据
       }
     };
     loadCompanies();
@@ -63,24 +73,29 @@ export default function Register() {
       setSubCompanies([]);
       return;
     }
-    const loadSubCompanies = async () => {
-      const { data: company } = await supabase
-        .from('companies')
-        .select('id')
-        .eq('name', selectedCompany)
-        .single();
+    // 先用硬编码数据填充
+    setSubCompanies(HARDCODED_SUBCOMPANIES[selectedCompany] || []);
 
-      if (company) {
-        const { data, error } = await supabase
-          .from('sub_companies')
-          .select('name')
-          .eq('company_id', company.id)
-          .order('name');
-        if (!error && data) {
-          setSubCompanies(data.map(s => s.name));
-        } else {
-          setSubCompanies([]);
+    const loadSubCompanies = async () => {
+      try {
+        const { data: company } = await supabase
+          .from('companies')
+          .select('id')
+          .eq('name', selectedCompany)
+          .single();
+
+        if (company) {
+          const { data, error } = await supabase
+            .from('sub_companies')
+            .select('name')
+            .eq('company_id', company.id)
+            .order('name');
+          if (!error && data && data.length > 0) {
+            setSubCompanies(data.map(s => s.name));
+          }
         }
+      } catch (e) {
+        // 静默失败，使用硬编码数据
       }
     };
     loadSubCompanies();
@@ -288,7 +303,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.1</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.2</p>
       </div>
     </div>
   );
