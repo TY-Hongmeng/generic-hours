@@ -17,7 +17,7 @@ const forgotPasswordSchema = z.object({
 
 type ForgotPasswordForm = z.infer<typeof forgotPasswordSchema>;
 
-const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
+const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-500 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
 const iconClass = "h-5 w-5 text-primary-600";
 const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 
@@ -133,7 +133,7 @@ export default function ForgotPassword() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.2</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.3</p>
       </div>
     </div>
   );

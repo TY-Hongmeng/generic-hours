@@ -24,7 +24,7 @@ const registerSchema = z.object({
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
-const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
+const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-500 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
 const iconClass = "h-5 w-5 text-primary-600";
 const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 
@@ -224,14 +224,15 @@ export default function Register() {
                     <Building className={iconClass} />
                   </div>
                   <select
-                    {...registerField('subCompanyName')}
-                    className={inputClass}
-                  >
-                    <option value="">请选择分公司（可选）</option>
-                    {subCompanies.map((s) => (
-                      <option key={s} value={s}>{s}</option>
-                    ))}
-                  </select>
+                  {...registerField('subCompanyName')}
+                  className={inputClass}
+                  style={{ color: '#6B7280' }}
+                >
+                  <option value="" style={{ color: '#6B7280' }}>请选择分公司（可选）</option>
+                  {subCompanies.map((s) => (
+                    <option key={s} value={s} style={{ color: '#374151' }}>{s}</option>
+                  ))}
+                </select>
                 </div>
               </div>
             )}
@@ -245,10 +246,11 @@ export default function Register() {
                 <select
                   {...registerField('role')}
                   className={inputClass}
+                  style={{ color: '#6B7280' }}
                 >
-                  <option value="">请选择角色</option>
+                  <option value="" style={{ color: '#6B7280' }}>请选择角色</option>
                   {ROLES.map((r) => (
-                    <option key={r} value={r}>{ROLE_LABELS[r]}</option>
+                    <option key={r} value={r} style={{ color: '#374151' }}>{ROLE_LABELS[r]}</option>
                   ))}
                 </select>
               </div>
