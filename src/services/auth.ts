@@ -4,8 +4,8 @@ import type { User, RegisterRequest, AuthResponse } from '../types';
 // 用户注册
 export async function register(data: RegisterRequest): Promise<AuthResponse> {
   try {
-    // 使用手机号作为邮箱格式
-    const email = `${data.phone}@generic-hours.com`;
+    // 使用手机号作为邮箱格式（登录和注册必须使用同一后缀）
+    const email = `${data.phone}@example.com`;
 
     // 创建 Supabase Auth 用户
     const { data: authData, error: authError } = await supabase.auth.signUp({
