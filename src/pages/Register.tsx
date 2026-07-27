@@ -24,7 +24,7 @@ const registerSchema = z.object({
 
 type RegisterForm = z.infer<typeof registerSchema>;
 
-const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-500 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
+const inputClass = "block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white text-gray-900 placeholder-gray-400 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent";
 const iconClass = "h-5 w-5 text-primary-600";
 const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 
@@ -44,6 +44,8 @@ export default function Register() {
   const [companies, setCompanies] = useState<string[]>(HARDCODED_COMPANIES);
   const [subCompanies, setSubCompanies] = useState<string[]>([]);
   const [selectedCompany, setSelectedCompany] = useState('');
+  const [selectedSubCompany, setSelectedSubCompany] = useState('');
+  const [selectedRole, setSelectedRole] = useState('');
 
   const { register: registerField, handleSubmit, formState: { errors } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -205,7 +207,7 @@ export default function Register() {
                   {...registerField('companyName', {
                     onChange: (e) => setSelectedCompany(e.target.value),
                   })}
-                  className={inputClass}
+                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedCompany ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                 >
                   <option value="">请选择公司</option>
                   {companies.map((c) => (
@@ -224,13 +226,14 @@ export default function Register() {
                     <Building className={iconClass} />
                   </div>
                   <select
-                  {...registerField('subCompanyName')}
-                  className={inputClass}
-                  style={{ color: '#6B7280' }}
+                  {...registerField('subCompanyName', {
+                    onChange: (e) => setSelectedSubCompany(e.target.value),
+                  })}
+                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedSubCompany ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                 >
-                  <option value="" style={{ color: '#6B7280' }}>请选择分公司（可选）</option>
+                  <option value="">请选择分公司（可选）</option>
                   {subCompanies.map((s) => (
-                    <option key={s} value={s} style={{ color: '#374151' }}>{s}</option>
+                    <option key={s} value={s}>{s}</option>
                   ))}
                 </select>
                 </div>
@@ -244,13 +247,14 @@ export default function Register() {
                   <Shield className={iconClass} />
                 </div>
                 <select
-                  {...registerField('role')}
-                  className={inputClass}
-                  style={{ color: '#6B7280' }}
+                  {...registerField('role', {
+                    onChange: (e) => setSelectedRole(e.target.value),
+                  })}
+                  className={`block w-full pl-10 pr-3 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-gray-900' : 'text-gray-500'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent`}
                 >
-                  <option value="" style={{ color: '#6B7280' }}>请选择角色</option>
+                  <option value="">请选择角色</option>
                   {ROLES.map((r) => (
-                    <option key={r} value={r} style={{ color: '#374151' }}>{ROLE_LABELS[r]}</option>
+                    <option key={r} value={r}>{ROLE_LABELS[r]}</option>
                   ))}
                 </select>
               </div>
@@ -305,7 +309,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.2</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.4</p>
       </div>
     </div>
   );
