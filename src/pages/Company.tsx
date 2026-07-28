@@ -20,12 +20,14 @@ export default function CompanyPage() {
   useEffect(() => {
     if (user?.company_id) {
       loadCompanyData();
+    } else if (user) {
+      setLoading(false);
     }
   }, [user]);
 
   const loadCompanyData = async () => {
     if (!user?.company_id) return;
-    
+
     const companyData = await getCompany(user.company_id);
     if (companyData) {
       setCompany(companyData);
@@ -42,7 +44,7 @@ export default function CompanyPage() {
 
   const handleSave = async () => {
     if (!user?.company_id) return;
-    
+
     const success = await updateCompany(user.company_id, editForm);
     if (success) {
       setCompany({ ...company!, ...editForm });
@@ -57,8 +59,16 @@ export default function CompanyPage() {
   }
 
   if (!company) {
-    return <div className="text-center py-8">未找到公司信息</div>;
+    return <div className="text-center py-8 text-gray-500">您当前没有所属公司</div>;
   }
+
+  const rows: Array<{ label: string; key: string; type?: string; value: string }> = [
+    { label: '公司名称',         key: 'name',           value: company.name },
+    { label: '统一社会信用代码', key: 'credit_code',    value: company.credit_code },
+    { label: '法人代表',         key: 'legal_person',   value: company.legal_person },
+    { label: '联系电话',         key: 'contact_phone',  type: 'tel', value: company.contact_phone },
+    { label: '公司地址',         key: 'address',        value: company.address },
+  ];
 
   return (
     <div className="bg-white shadow rounded-lg">
@@ -101,79 +111,35 @@ export default function CompanyPage() {
           </div>
         )}
       </div>
-      
-      <div className="px-6 py-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">公司名称</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.name}
-                onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{company.name}</p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">统一社会信用代码</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.credit_code}
-                onChange={(e) => setEditForm({ ...editForm, credit_code: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{company.credit_code || '-'}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">法人代表</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.legal_person}
-                onChange={(e) => setEditForm({ ...editForm, legal_person: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{company.legal_person || '-'}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">联系电话</label>
-            {isEditing ? (
-              <input
-                type="tel"
-                value={editForm.contact_phone}
-                onChange={(e) => setEditForm({ ...editForm, contact_phone: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{company.contact_phone || '-'}</p>
-            )}
-          </div>
-
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-500 mb-1">公司地址</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.address}
-                onChange={(e) => setEditForm({ ...editForm, address: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{company.address || '-'}</p>
-            )}
-          </div>
-        </div>
+      <div className="px-6 py-4">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">字段</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">值</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {rows.map((row) => (
+              <tr key={row.key} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">{row.label}</td>
+                <td className="px-6 py-4 text-sm text-gray-900">
+                  {isEditing ? (
+                    <input
+                      type={row.type || 'text'}
+                      value={editForm[row.key as keyof typeof editForm] || ''}
+                      onChange={(e) => setEditForm({ ...editForm, [row.key]: e.target.value })}
+                      className="w-full max-w-md px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    <span className={row.value ? '' : 'text-gray-400'}>{row.value || '-'}</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

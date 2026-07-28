@@ -21,21 +21,23 @@ export default function Profile() {
 
   const loadUserData = async () => {
     if (!currentUser) return;
-    
+
     const userData = await getUser(currentUser.id);
     if (userData) {
       setUser(userData);
       setEditForm({ phone: userData.phone, real_name: userData.real_name });
-      
-      const companyData = await getCompany(userData.company_id);
-      setCompany(companyData);
+
+      if (userData.company_id) {
+        const companyData = await getCompany(userData.company_id);
+        setCompany(companyData);
+      }
     }
     setLoading(false);
   };
 
   const handleSave = async () => {
     if (!currentUser) return;
-    
+
     const success = await updateUser(currentUser.id, editForm);
     if (success) {
       setUser({ ...user!, ...editForm });
@@ -44,12 +46,19 @@ export default function Profile() {
   };
 
   const getRoleName = (role: string) => {
-    switch (role) {
-      case 'user': return '普通用户';
-      case 'admin': return '企业管理员';
-      case 'super_admin': return '系统管理员';
-      default: return role;
-    }
+    const map: Record<string, string> = {
+      user: '普通用户',
+      admin: '企业管理员',
+      super_admin: '系统管理员',
+      employee: '员工',
+      team_leader: '班长',
+      section_leader: '段长',
+      accountant: '财会',
+      production_manager: '生产经理',
+      finance_director: '财务总监',
+      system_admin: '系统管理员',
+    };
+    return map[role] || role;
   };
 
   if (loading) {
@@ -59,6 +68,14 @@ export default function Profile() {
   if (!user) {
     return <div className="text-center py-8">未找到用户信息</div>;
   }
+
+  const rows: Array<{ label: string; key: string; editable?: boolean; type?: string; value: string }> = [
+    { label: '手机号',     key: 'phone',     editable: true, type: 'tel',   value: user.phone },
+    { label: '身份证号',   key: 'id_card',   value: user.id_card },
+    { label: '真实姓名',   key: 'real_name', editable: true,             value: user.real_name },
+    { label: '所属公司',   key: 'company',   value: company?.name || '-' },
+    { label: '角色',       key: 'role',      value: getRoleName(user.role) },
+  ];
 
   return (
     <div className="bg-white shadow rounded-lg">
@@ -94,52 +111,35 @@ export default function Profile() {
           </div>
         )}
       </div>
-      
-      <div className="px-6 py-4 space-y-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">手机号</label>
-            {isEditing ? (
-              <input
-                type="tel"
-                value={editForm.phone}
-                onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{user.phone}</p>
-            )}
-          </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">身份证号</label>
-            <p className="text-gray-900">{user.id_card}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">真实姓名</label>
-            {isEditing ? (
-              <input
-                type="text"
-                value={editForm.real_name}
-                onChange={(e) => setEditForm({ ...editForm, real_name: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
-              />
-            ) : (
-              <p className="text-gray-900">{user.real_name}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">公司名称</label>
-            <p className="text-gray-900">{company?.name || '-'}</p>
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-500 mb-1">角色</label>
-            <p className="text-gray-900">{getRoleName(user.role)}</p>
-          </div>
-        </div>
+      <div className="px-6 py-4">
+        <table className="min-w-full divide-y divide-gray-200">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-1/4">字段</th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">值</th>
+            </tr>
+          </thead>
+          <tbody className="bg-white divide-y divide-gray-200">
+            {rows.map((row) => (
+              <tr key={row.key} className="hover:bg-gray-50">
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-500">{row.label}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                  {isEditing && row.editable ? (
+                    <input
+                      type={row.type || 'text'}
+                      value={editForm[row.key as keyof typeof editForm] ?? ''}
+                      onChange={(e) => setEditForm({ ...editForm, [row.key]: e.target.value })}
+                      className="w-full max-w-md px-3 py-1.5 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    />
+                  ) : (
+                    row.value
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
