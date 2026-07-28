@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import type { Company } from '../types';
+import type { Company, SubCompany } from '../types';
 
 // 获取公司信息
 export async function getCompany(companyId: string): Promise<Company | null> {
@@ -7,6 +7,21 @@ export async function getCompany(companyId: string): Promise<Company | null> {
     .from('companies')
     .select('*')
     .eq('id', companyId)
+    .single();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data;
+}
+
+// 获取分公司信息
+export async function getSubCompany(subCompanyId: string): Promise<SubCompany | null> {
+  const { data, error } = await supabase
+    .from('sub_companies')
+    .select('*')
+    .eq('id', subCompanyId)
     .single();
 
   if (error || !data) {

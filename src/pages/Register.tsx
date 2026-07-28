@@ -329,7 +329,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.15</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.16</p>
       </div>
     </div>
   );
