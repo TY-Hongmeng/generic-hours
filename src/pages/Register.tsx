@@ -14,15 +14,15 @@ const registerSchema = z.object({
   realName: z.string().min(2, '请输入真实姓名'),
   companyName: z.string().optional(),
   subCompanyName: z.string().optional(),
-  role: z.enum(['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director', 'system_admin'], { required_error: '请选择角色' }),
+  role: z.enum(['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director'], { required_error: '请选择角色' }),
   password: z.string().min(6, '密码至少6位'),
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
   message: '两次密码输入不一致',
   path: ['confirmPassword'],
 }).refine((data) => {
-  // 非系统管理员必须选择公司
-  if (data.role !== 'system_admin' && (!data.companyName || data.companyName.length === 0)) {
+  // 注册用户必须选择公司（系统管理员只能由后台创建，不通过注册）
+  if (!data.companyName || data.companyName.length === 0) {
     return false;
   }
   return true;
@@ -38,7 +38,8 @@ const iconClass = "h-5 w-5 text-primary-600";
 const labelClass = "block text-sm font-medium text-primary-700 mb-1";
 
 const COMPANIES_WITH_SUB = ['吉通喜福地'];
-const ROLES: RoleType[] = ['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director', 'system_admin'];
+// 注册时可选的角色（系统管理员只能由后台创建，不通过注册）
+const REGISTER_ROLES: RoleType[] = ['employee', 'team_leader', 'section_leader', 'accountant', 'production_manager', 'finance_director'];
 
 // 硬编码公司列表（同时从Supabase获取以保证数据一致）
 const HARDCODED_COMPANIES = ['吉通凯撒', '吉通喜福地'];
@@ -219,7 +220,7 @@ export default function Register() {
                   className={`block w-full pl-10 pr-10 py-2 border-2 border-primary-600 bg-white ${selectedRole ? 'text-primary-600' : 'text-gray-400'} rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent cursor-pointer`}
                 >
                   <option value="">请选择角色</option>
-                  {ROLES.map((r) => (
+                  {REGISTER_ROLES.map((r) => (
                     <option key={r} value={r} className="text-gray-900">{ROLE_LABELS[r]}</option>
                   ))}
                 </select>
@@ -230,7 +231,6 @@ export default function Register() {
               {errors.role && <p className="mt-1 text-sm text-red-600">{errors.role.message}</p>}
             </div>
 
-            {selectedRole !== 'system_admin' && (
             <div>
               <label className={labelClass}>公司</label>
               <div className="relative">
@@ -254,7 +254,6 @@ export default function Register() {
               </div>
               {errors.companyName && <p className="mt-1 text-sm text-red-600">{errors.companyName.message}</p>}
             </div>
-            )}
 
             {COMPANIES_WITH_SUB.includes(selectedCompany) && (
               <div>
@@ -329,7 +328,7 @@ export default function Register() {
             </Link>
           </div>
         </div>
-        <p className="text-center text-xs text-primary-500 mt-4">v260727.16</p>
+        <p className="text-center text-xs text-primary-500 mt-4">v260727.17</p>
       </div>
     </div>
   );

@@ -24,31 +24,11 @@ export async function register(data: RegisterRequest): Promise<AuthResponse> {
     let companyId: string | null = null;
     let subCompanyId: string | null = null;
 
-    // 系统管理员不需要所属公司
+    // 系统管理员不能通过注册创建（只能由后台 admin API 或 SQL 创建）
     if (data.role === 'system_admin') {
-      if (!data.companyName) {
-        // 系统管理员无公司，直接创建用户记录
-        const { error: userError } = await supabase
-          .from('users')
-          .insert({
-            id: authData.user.id,
-            phone: data.phone,
-            id_card: data.idCard,
-            real_name: data.realName,
-            company_id: null,
-            sub_company_id: null,
-            role: data.role,
-          });
-
-        if (userError) {
-          return { success: false, message: '创建用户记录失败：' + userError.message };
-        }
-
-        return { success: true, message: '注册成功，请登录' };
-      }
+      return { success: false, message: '系统管理员只能由系统后台创建，不能通过注册' };
     }
 
-    // 非系统管理员，必须有公司
     if (!data.companyName) {
       return { success: false, message: '请选择公司' };
     }
